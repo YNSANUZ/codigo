@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conhecimento do Código Q</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f9;
+            padding: 20px;
+            transition: background-color 0.5s ease;
+        }
+        #game-container {
+            margin: auto;
+            padding: 20px;
+            border: 2px solid #333;
+            background-color: #fff;
+            width: 300px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+        .progress-bar-container {
+            width: 100%;
+            background-color: #ddd;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            height: 20px;
+        }
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background-color: #4caf50;
+        }
+        .timer {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            background-color: #333;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        .question {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+        .options button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .options button:hover { background-color: #0056b3; }
+        .final-stars {
+            font-size: 40px;
+            margin-top: 10px;
+        }
+        #retry-button {
+            display: block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #retry-button:hover { background-color: #218838; }
+    </style>
+</head>
+<body>
+    <h1>Conhecimento do Código Q</h1>
+    <div id="game-container">
+        <div class="progress-bar-container"><div class="progress-bar" id="progress-bar"></div></div>
+        <div class="timer" id="timer">10</div>
+        <div class="question" id="q-code"></div>
+        <div class="options" id="options-container"></div>
+        <div class="score">Pontuação: <span id="score">0</span></div>
+        <div class="final-message" id="final-message"></div>
+    </div>
+
+    <script>
+        const qCodes = [
+            { code: "QAP", meaning: "Está na escuta?" },
+            { code: "QRA", meaning: "Qual é o seu nome?" },
+            { code: "QRM", meaning: "Interferência" },
+            { code: "QRN", meaning: "Interferência estática" },
+            { code: "QRO", meaning: "Aumentar potência" },
+            { code: "QRP", meaning: "Reduzir potência" },
+            { code: "QRQ", meaning: "Enviar mais rápido" },
+            { code: "QRS", meaning: "Enviar mais devagar" },
+            { code: "QRT", meaning: "Parar de enviar" },
+            { code: "QRU", meaning: "Não tenho nada para você" }
+        ];
+
+        let score = 0, attempts = 0, maxAttempts = 10, timerInterval;
+        let remainingQuestions = [...qCodes];  
+
+        const stars = [
+            "☆☆☆☆☆ MUITO RUIM", "★☆☆☆☆ RUIM", "★★☆☆☆ BOM", 
+            "★★★☆☆ MUITO BOM", "★★★★☆ EXCELENTE", "★★★★★ ESPECIALISTA"
+        ];
+
+        function getRandomQuestion() {
+            if (remainingQuestions.length === 0) return null;
+            const index = Math.floor(Math.random() * remainingQuestions.length);
+            return remainingQuestions.splice(index, 1)[0];
+        }
+
+        function startTimer() {
+            let timeLeft = 10;
+            document.getElementById("timer").textContent = timeLeft;
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById("timer").textContent = timeLeft;
+                if (timeLeft === 0) {
+                    clearInterval(timerInterval);
+                    handleTimeout();
+                }
+            }, 1000);
+        }
+
+        function handleTimeout() {
+            document.body.style.backgroundColor = 'red';
+            score--;
+            document.getElementById("score").textContent = score;
+            setTimeout(() => {
+                document.body.style.backgroundColor = '#f4f4f9';
+                proceedToNext();
+            }, 2000);
+        }
+
+        function updateProgressBar() {
+            document.getElementById("progress-bar").style.width = `${(attempts / maxAttempts) * 100}%`;
+        }
+
+        function displayQuestion() {
+            if (attempts >= maxAttempts) {
+                showFinalMessage();
+                return;
+            }
+
+            updateProgressBar();
+            let currentQuestion = getRandomQuestion();
+            if (!currentQuestion) {
+                showFinalMessage();
+                return;
+            }
+
+            document.getElementById("q-code").textContent = currentQuestion.code;
+            const options = shuffleArray([...qCodes.map(q => q.meaning)]).slice(0, 5);
+            if (!options.includes(currentQuestion.meaning)) options[Math.floor(Math.random() * options.length)] = currentQuestion.meaning;
+            const optionsContainer = document.getElementById("options-container");
+            optionsContainer.innerHTML = '';
+
+            options.forEach(option => {
+                const button = document.createElement('button');
+                button.textContent = option;
+                button.onclick = () => { clearInterval(timerInterval); checkAnswer(button, option, currentQuestion.meaning); };
+                optionsContainer.appendChild(button);
+            });
+
+            startTimer();
+        }
+
+        function checkAnswer(button, selectedOption, correctAnswer) {
+            if (selectedOption === correctAnswer) {
+                document.body.style.backgroundColor = 'green';
+                score++;
+            } else {
+                document.body.style.backgroundColor = 'red';
+                score--;
+                document.querySelectorAll('.options button').forEach(btn => {
+                    if (btn.textContent === correctAnswer) btn.style.backgroundColor = 'green';
+                });
+            }
+            document.getElementById("score").textContent = score;
+            setTimeout(() => {
+                document.body.style.backgroundColor = '#f4f4f9';
+                proceedToNext();
+            }, 2000);
+        }
+
+        function proceedToNext() {
+            attempts++;
+            if (attempts >= maxAttempts) showFinalMessage();
+            else displayQuestion();
+        }
+
+        function showFinalMessage() {
+            document.getElementById("game-container").innerHTML = `
+                <div class="final-message">Pontuação Final: ${score}</div>
+                <div class="final-stars">${stars[Math.min(Math.max(score, 0), 5)]}</div>
+                <button id="retry-button" onclick="restartGame()">Tentar novamente</button>
+            `;
+        }
+
+        function restartGame() {
+            score = 0;
+            attempts = 0;
+            remainingQuestions = [...qCodes];
+            document.getElementById("game-container").innerHTML = `
+                <div class="progress-bar-container"><div class="progress-bar" id="progress-bar"></div></div>
+                <div class="timer" id="timer">10</div>
+                <div class="question" id="q-code"></div>
+                <div class="options" id="options-container"></div>
+                <div class="score">Pontuação: <span id="score">0</span></div>
+            `;
+            displayQuestion();
+        }
+
+        function shuffleArray(array) {
+            return array.sort(() => Math.random() - 0.5);
+        }
+
+        displayQuestion();
+    </script>
+
+    <p>Pix para agradecer ao desenvolvedor: <b>obstruir@gmail.com</b></p>
+</body>
+</html>
