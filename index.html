@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conhecimento do Código Q</title>
+    <title>Conhecimento código Q</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -93,15 +93,40 @@
     <script>
         const qCodes = [
             { code: "QAP", meaning: "Está na escuta?" },
-            { code: "QRA", meaning: "Qual é o seu nome?" },
-            { code: "QRM", meaning: "Interferência" },
-            { code: "QRN", meaning: "Interferência estática" },
-            { code: "QRO", meaning: "Aumentar potência" },
-            { code: "QRP", meaning: "Reduzir potência" },
-            { code: "QRQ", meaning: "Enviar mais rápido" },
-            { code: "QRS", meaning: "Enviar mais devagar" },
-            { code: "QRT", meaning: "Parar de enviar" },
-            { code: "QRU", meaning: "Não tenho nada para você" }
+{ code: "QAR", meaning: "Desligar" },
+{ code: "QRA", meaning: "Qual nome do operador ou da estação (indicativo)" },
+{ code: "QRB", meaning: "Qual distância da estação. Qual sua distância" },
+{ code: "QRL", meaning: "Você está ocupado?" },
+{ code: "QRM", meaning: "Está sofrendo interferência humana?" },
+{ code: "QRM", meaning: "Você sofre interferência?" },
+{ code: "QRN", meaning: "Está com interferência na comunicação?" },
+{ code: "QRQ", meaning: "Transmita mais depressa" },
+{ code: "QRQ", meaning: "Transmitir mais depressa" },
+{ code: "QRS", meaning: "Transmita mais devagar" },
+{ code: "QRS", meaning: "Transmitir mais devagar" },
+{ code: "QRT", meaning: "Devo parar de transmitir? Fora do ar" },
+{ code: "QRU", meaning: "Tens algo para mim?" },
+{ code: "QRV", meaning: "Está preparado? Às suas ordens" },
+{ code: "QRX", meaning: "Quando você vai me ligar de novo?" },
+{ code: "QRZ", meaning: "Quem está me chamando?" },
+{ code: "QSA", meaning: "Como está recebendo? Qual a força do sinal?" },
+{ code: "QSD", meaning: "Motorista" },
+{ code: "QSJ", meaning: "Dinheiro, pagamento" },
+{ code: "QSL", meaning: "Entendido, acusado o recebimento da mensagem" },
+{ code: "QSM", meaning: "Devo repetir a última mensagem?" },
+{ code: "QSN", meaning: "Escutou-me" },
+{ code: "QSO", meaning: "Comunicado, aviso" },
+{ code: "QSP", meaning: "Fazer ponte. Pode transmitir para..." },
+{ code: "QSR", meaning: "Devo repetir" },
+{ code: "QSV", meaning: "Viatura" },
+{ code: "QTA", meaning: "Devo cancelar a última mensagem?" },
+{ code: "QTC", meaning: "Quantas mensagens para enviar? Tem mensagem para enviar?" },
+{ code: "QTH", meaning: "Qual endereço, local, posição" },
+{ code: "QTN", meaning: "Que horas saiu" },
+{ code: "QTR", meaning: "Qual o horário exato?" },
+{ code: "QTU", meaning: "Em qual horário irá operar?" },
+{ code: "QUA", meaning: "Você tem notícias de..." },
+{ code: "TKS", meaning: "Obrigado" }
         ];
 
         let score = 0, attempts = 0, maxAttempts = 10, timerInterval;
